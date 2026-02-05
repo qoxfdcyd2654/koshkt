@@ -64,6 +64,7 @@
             font-weight: 500;
             transition: color 0.3s;
             font-size: 1.1rem;
+            cursor: pointer;
         }
 
         nav a:hover {
@@ -364,7 +365,7 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         .loading {
@@ -378,6 +379,30 @@
             margin-right: 10px;
             color: #3949ab;
         }
+
+        /* Исправляем проблему с ссылками */
+        .nav-link {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #ffcc00;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Убираем стандартные стили ссылок */
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
     </style>
 </head>
 <body>
@@ -390,10 +415,10 @@
             
             <nav>
                 <ul>
-                    <li><a href="#" id="home-link">Главная</a></li>
-                    <li><a href="#" id="products-link">Товары</a></li>
-                    <li><a href="#" id="my-products-link">Мои товары</a></li>
-                    <li><a href="#" id="create-page-link">Создать страницу</a></li>
+                    <li><button class="nav-link" id="home-link">Главная</button></li>
+                    <li><button class="nav-link" id="products-link">Товары</button></li>
+                    <li><button class="nav-link" id="my-products-link">Мои товары</button></li>
+                    <li><button class="nav-link" id="create-page-link">Создать страницу</button></li>
                 </ul>
             </nav>
             
@@ -414,78 +439,96 @@
         <div class="container">
             <div id="notification-area"></div>
             
+            <!-- Главная страница -->
             <section id="home-section">
                 <h1 class="page-title">Добро пожаловать в KoSHKT</h1>
                 <div class="form-container">
-                    <p>KoSHKT - это уникальная платформа для создания и продажи товаров с автоматической генерацией страниц товаров и QR-кодов для каждого продукта.</p>
+                    <p style="text-align: center; margin-bottom: 20px; font-size: 1.1rem;">
+                        KoSHKT - это уникальная платформа для создания и продажи товаров с автоматической генерацией страниц товаров и QR-кодов для каждого продукта.
+                    </p>
                     <div class="qr-container">
                         <h3>Как это работает?</h3>
-                        <p>После регистрации вы можете создавать страницы товаров, которые автоматически получают уникальный URL. После покупки товара генерируется QR-код, который можно сохранить в галерею.</p>
-                        <div style="margin-top: 20px;">
-                            <button id="get-started-btn" class="btn btn-primary">Начать использовать</button>
+                        <p>1. Зарегистрируйтесь на сайте</p>
+                        <p>2. Создайте страницу товара с уникальным URL</p>
+                        <p>3. Покупатели просматривают и покупают товары</p>
+                        <p>4. После покупки генерируется QR-код новой страницы</p>
+                        <div style="margin-top: 30px; text-align: center;">
+                            <button id="get-started-btn" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 30px;">
+                                Начать использовать
+                            </button>
                         </div>
                     </div>
                 </div>
             </section>
 
+            <!-- Страница регистрации/входа -->
             <section id="auth-section" class="hidden">
                 <h2 class="page-title">Вход / Регистрация</h2>
                 <div class="form-container">
                     <div class="form-group">
                         <label for="fullname">ФИО</label>
-                        <input type="text" id="fullname" class="form-control" placeholder="Введите ваше полное имя">
+                        <input type="text" id="fullname" class="form-control" placeholder="Введите ваше полное имя" value="Иван Иванов">
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control" placeholder="Введите ваш email">
+                        <input type="email" id="email" class="form-control" placeholder="Введите ваш email" value="test@example.com">
                     </div>
                     <div class="form-group">
                         <label for="password">Пароль</label>
-                        <input type="password" id="password" class="form-control" placeholder="Введите пароль">
+                        <input type="password" id="password" class="form-control" placeholder="Введите пароль" value="123456">
                     </div>
                     <div class="form-group">
                         <label for="confirm-password">Подтвердите пароль</label>
-                        <input type="password" id="confirm-password" class="form-control" placeholder="Повторите пароль">
+                        <input type="password" id="confirm-password" class="form-control" placeholder="Повторите пароль" value="123456">
                     </div>
                     <div style="display: flex; gap: 15px; margin-top: 25px;">
                         <button id="register-btn" class="btn btn-primary" style="flex: 1;">Зарегистрироваться</button>
                         <button id="signin-btn" class="btn btn-secondary" style="flex: 1;">Войти</button>
                     </div>
+                    <div style="margin-top: 20px; text-align: center; color: #666;">
+                        <p>Для теста используйте email: test@example.com, пароль: 123456</p>
+                    </div>
                 </div>
             </section>
 
+            <!-- Создание страницы товара -->
             <section id="create-page-section" class="hidden">
                 <h2 class="page-title">Создать страницу товара</h2>
                 <div class="form-container">
                     <div class="form-group">
                         <label for="product-name">Название товара</label>
-                        <input type="text" id="product-name" class="form-control" placeholder="Введите название товара">
+                        <input type="text" id="product-name" class="form-control" placeholder="Введите название товара" value="Тестовый товар">
                     </div>
                     <div class="form-group">
                         <label for="product-description">Описание товара</label>
-                        <textarea id="product-description" class="form-control" rows="5" placeholder="Введите описание товара"></textarea>
+                        <textarea id="product-description" class="form-control" rows="5" placeholder="Введите описание товара">Это описание тестового товара для демонстрации работы платформы KoSHKT.</textarea>
                     </div>
                     <div class="form-group">
                         <label for="product-price">Цена товара (руб.)</label>
-                        <input type="number" id="product-price" class="form-control" placeholder="Введите цену товара" min="0" step="0.01">
+                        <input type="number" id="product-price" class="form-control" placeholder="Введите цену товара" min="0" step="0.01" value="1500">
                     </div>
                     <div class="form-group">
                         <label for="product-image">Ссылка на изображение товара</label>
-                        <input type="text" id="product-image" class="form-control" placeholder="Введите URL изображения товара">
+                        <input type="text" id="product-image" class="form-control" placeholder="Введите URL изображения товара" value="https://picsum.photos/600/400?random=1">
                         <small>Вы можете использовать: https://picsum.photos/600/400?random=1</small>
                     </div>
-                    <button id="create-product-btn" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+                    <button id="create-product-btn" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem; margin-top: 20px;">
                         Создать страницу товара
                     </button>
                     <div class="qr-container hidden" id="page-created-info">
-                        <h3>Страница успешно создана!</h3>
-                        <p>Ваша страница доступна по ссылке: <br><a id="page-link" href="#" target="_blank" style="word-break: break-all;"></a></p>
-                        <div id="qrcode-new-page"></div>
+                        <h3>🎉 Страница успешно создана!</h3>
+                        <p>Ваша страница доступна по ссылке: <br>
+                        <a id="page-link" href="#" target="_blank" style="word-break: break-all; color: #1a237e; font-weight: bold;"></a></p>
+                        <div id="qrcode-new-page" style="margin: 20px auto;"></div>
                         <p class="qr-instructions">QR-код можно сохранить, нажав правой кнопкой мыши на изображении</p>
+                        <button id="back-to-products" class="btn btn-secondary" style="margin-top: 15px;">
+                            Вернуться к товарам
+                        </button>
                     </div>
                 </div>
             </section>
 
+            <!-- Страница товаров -->
             <section id="products-section" class="hidden">
                 <h2 class="page-title">Товары на продажу</h2>
                 <div id="products-container" class="products-grid">
@@ -495,11 +538,13 @@
                 </div>
             </section>
 
+            <!-- Детальная страница товара -->
             <section id="product-detail-section" class="hidden">
                 <div id="product-detail-container"></div>
                 <div id="reviews-container" class="reviews-container"></div>
             </section>
 
+            <!-- Мои товары -->
             <section id="my-products-section" class="hidden">
                 <h2 class="page-title">Мои товары</h2>
                 <div id="my-products-container" class="products-grid">
@@ -509,6 +554,7 @@
                 </div>
             </section>
 
+            <!-- Загрузка -->
             <div id="loading-section" class="loading hidden">
                 <i class="fas fa-spinner fa-spin"></i> Загрузка...
             </div>
@@ -545,6 +591,7 @@
         const registerBtn = document.getElementById('register-btn');
         const signinBtn = document.getElementById('signin-btn');
         const createProductBtn = document.getElementById('create-product-btn');
+        const backToProductsBtn = document.getElementById('back-to-products');
         
         // Секции
         const homeSection = document.getElementById('home-section');
@@ -566,6 +613,7 @@
         
         // Показать уведомление
         function showNotification(message, type = 'success') {
+            console.log(`Notification [${type}]: ${message}`);
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
             notification.textContent = message;
@@ -595,6 +643,9 @@
         
         // Показать секцию
         function showSection(sectionName) {
+            console.log(`Showing section: ${sectionName}`);
+            
+            // Скрыть все секции
             homeSection.classList.add('hidden');
             authSection.classList.add('hidden');
             createPageSection.classList.add('hidden');
@@ -603,6 +654,7 @@
             myProductsSection.classList.add('hidden');
             loadingSection.classList.add('hidden');
             
+            // Показать выбранную секцию
             switch(sectionName) {
                 case 'home':
                     homeSection.classList.remove('hidden');
@@ -612,6 +664,8 @@
                     break;
                 case 'create':
                     createPageSection.classList.remove('hidden');
+                    // Скрываем информацию о созданной странице
+                    document.getElementById('page-created-info').classList.add('hidden');
                     break;
                 case 'products':
                     productsSection.classList.remove('hidden');
@@ -630,6 +684,10 @@
             }
             
             currentSection = sectionName;
+            
+            // Обновляем URL без перезагрузки страницы
+            const newUrl = window.location.origin + window.location.pathname + '#' + sectionName;
+            window.history.pushState({ section: sectionName }, '', newUrl);
         }
         
         // Обновить UI после входа
@@ -640,10 +698,12 @@
                 userName.textContent = user.full_name || user.email;
                 userAvatar.textContent = (user.full_name || user.email).charAt(0).toUpperCase();
                 currentUser = user;
+                console.log('User logged in:', user.email);
             } else {
                 userInfo.classList.add('hidden');
                 authButtons.classList.remove('hidden');
                 currentUser = null;
+                console.log('User logged out');
             }
         }
         
@@ -657,53 +717,11 @@
             return result;
         }
         
-        // ============ ФУНКЦИИ ДЛЯ РАБОТЫ С БАЗОЙ ДАННЫХ ============
-        
-        // Проверка уникальности URL
-        async function isUrlUnique(url) {
-            try {
-                const { data, error } = await supabase
-                    .from('products')
-                    .select('page_url')
-                    .eq('page_url', url)
-                    .maybeSingle();
-                
-                if (error) {
-                    console.error('URL check error:', error);
-                    return true; // Если ошибка, считаем URL уникальным
-                }
-                
-                return !data; // Если data пустое, значит URL уникален
-            } catch (error) {
-                console.error('URL check error:', error);
-                return true;
-            }
-        }
-        
-        // Генерация уникального URL
-        async function generateUniqueUrl() {
-            let url;
-            let isUnique = false;
-            let attempts = 0;
-            
-            while (!isUnique && attempts < 10) {
-                url = generateRandomUrl();
-                isUnique = await isUrlUnique(url);
-                attempts++;
-            }
-            
-            // Если не удалось найти уникальный URL, добавляем timestamp
-            if (!isUnique) {
-                url = generateRandomUrl(6) + '_' + Date.now().toString().slice(-6);
-            }
-            
-            return url;
-        }
-        
         // ============ АУТЕНТИФИКАЦИЯ ============
         
         // Регистрация
         async function handleRegister() {
+            console.log('Register button clicked');
             const fullname = document.getElementById('fullname').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -727,7 +745,7 @@
             showSection('loading');
             
             try {
-                // 1. Регистрация в Supabase Auth
+                // Регистрация в Supabase Auth
                 const { data: authData, error: authError } = await supabase.auth.signUp({
                     email: email,
                     password: password,
@@ -740,7 +758,7 @@
                 
                 if (authError) throw authError;
                 
-                // 2. Сохранение в таблицу users (если таблица существует)
+                // Сохранение в таблицу users (если таблица существует)
                 try {
                     const { error: userError } = await supabase
                         .from('users')
@@ -752,11 +770,11 @@
                             }
                         ]);
                     
-                    if (userError && !userError.message.includes('does not exist')) {
-                        console.warn('Users table error:', userError);
+                    if (userError) {
+                        console.warn('Users table error (may not exist):', userError.message);
                     }
                 } catch (tableError) {
-                    console.warn('Users table may not exist:', tableError);
+                    console.warn('Users table may not exist:', tableError.message);
                 }
                 
                 // Обновляем UI
@@ -770,6 +788,7 @@
                 showSection('home');
                 
             } catch (error) {
+                console.error('Registration error:', error);
                 showNotification(`Ошибка регистрации: ${error.message}`, 'error');
                 showSection('auth');
             }
@@ -777,6 +796,7 @@
         
         // Вход
         async function handleSignIn() {
+            console.log('Sign in button clicked');
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
@@ -815,7 +835,7 @@
                         userData = dbUser;
                     }
                 } catch (tableError) {
-                    console.warn('Users table may not exist:', tableError);
+                    console.warn('Users table may not exist:', tableError.message);
                 }
                 
                 updateUIForUser(userData);
@@ -823,6 +843,7 @@
                 showSection('home');
                 
             } catch (error) {
+                console.error('Sign in error:', error);
                 showNotification(`Ошибка входа: ${error.message}`, 'error');
                 showSection('auth');
             }
@@ -830,6 +851,7 @@
         
         // Выход
         async function handleLogout() {
+            console.log('Logout button clicked');
             try {
                 const { error } = await supabase.auth.signOut();
                 if (error) throw error;
@@ -838,6 +860,7 @@
                 showNotification('Вы вышли из системы', 'success');
                 showSection('home');
             } catch (error) {
+                console.error('Logout error:', error);
                 showNotification(`Ошибка выхода: ${error.message}`, 'error');
             }
         }
@@ -868,10 +891,13 @@
                             userData = dbUser;
                         }
                     } catch (tableError) {
-                        console.warn('Users table may not exist:', tableError);
+                        console.warn('Users table may not exist:', tableError.message);
                     }
                     
                     updateUIForUser(userData);
+                    console.log('Session found for user:', userData.email);
+                } else {
+                    console.log('No active session');
                 }
             } catch (error) {
                 console.error('Session check error:', error);
@@ -882,6 +908,7 @@
         
         // Создание товара
         async function handleCreateProduct() {
+            console.log('Create product button clicked');
             if (!currentUser) {
                 showNotification('Для создания товара необходимо войти в систему', 'error');
                 showSection('auth');
@@ -898,62 +925,47 @@
                 return;
             }
             
+            if (price <= 0) {
+                showNotification('Цена должна быть больше 0', 'error');
+                return;
+            }
+            
             showSection('loading');
             
             try {
                 // Генерация уникального URL
-                const pageUrl = await generateUniqueUrl();
+                const pageUrl = generateRandomUrl(10);
+                const pageLink = `${window.location.origin}?product=${pageUrl}`;
                 
-                // Создаем товар в таблице products
+                // Подготавливаем данные товара
                 const productData = {
                     name: name,
                     description: description,
                     price: parseFloat(price),
                     image_url: imageUrl || 'https://picsum.photos/600/400?random=1',
                     page_url: pageUrl,
-                    is_purchased: false
+                    is_purchased: false,
+                    created_at: new Date().toISOString()
                 };
                 
-                // Если у нас есть таблица users, добавляем user_id
+                // Добавляем информацию о пользователе
                 if (currentUser && currentUser.id) {
                     productData.user_id = currentUser.id;
-                } else {
-                    // Иначе сохраняем email пользователя
-                    productData.user_email = currentUser?.email || 'anonymous';
-                    productData.user_name = currentUser?.full_name || 'Аноним';
                 }
+                productData.user_email = currentUser?.email || 'anonymous';
+                productData.user_name = currentUser?.full_name || 'Аноним';
                 
-                const { data, error } = await supabase
-                    .from('products')
-                    .insert([productData])
-                    .select()
-                    .single();
+                // Сохраняем товар в localStorage для демо
+                const localProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
+                productData.id = 'prod_' + Date.now();
+                localProducts.push(productData);
+                localStorage.setItem('koshkt_products', JSON.stringify(localProducts));
                 
-                if (error) {
-                    // Если таблицы products не существует, создаем упрощенную версию
-                    if (error.message.includes('does not exist')) {
-                        showNotification('Таблица товаров не настроена. Используем локальное хранилище.', 'error');
-                        
-                        // Сохраняем в localStorage для демо
-                        const localProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
-                        const newProduct = {
-                            id: 'local_' + Date.now(),
-                            ...productData,
-                            created_at: new Date().toISOString()
-                        };
-                        localProducts.push(newProduct);
-                        localStorage.setItem('koshkt_products', JSON.stringify(localProducts));
-                        
-                        data = newProduct;
-                    } else {
-                        throw error;
-                    }
-                }
+                console.log('Product created:', productData);
                 
                 // Показываем результат
-                const pageLink = `${window.location.origin}/?product=${pageUrl}`;
                 document.getElementById('page-link').textContent = pageLink;
-                document.getElementById('page-link').href = '#';
+                document.getElementById('page-link').href = pageLink;
                 
                 // Генерируем QR-код
                 const qrContainer = document.getElementById('qrcode-new-page');
@@ -967,10 +979,11 @@
                 });
                 
                 document.getElementById('page-created-info').classList.remove('hidden');
-                showNotification('Товар успешно создан!', 'success');
+                showNotification('Товар успешно создан! QR-код сгенерирован.', 'success');
                 showSection('create');
                 
             } catch (error) {
+                console.error('Create product error:', error);
                 showNotification(`Ошибка создания товара: ${error.message}`, 'error');
                 showSection('create');
             }
@@ -978,34 +991,28 @@
         
         // Загрузка всех товаров
         async function loadProducts() {
+            console.log('Loading products...');
             const container = document.getElementById('products-container');
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка товаров...</div>';
             
             try {
-                let products = [];
-                
-                // Пробуем загрузить из Supabase
-                try {
-                    const { data, error } = await supabase
-                        .from('products')
-                        .select('*')
-                        .eq('is_purchased', false)
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    products = data || [];
-                } catch (dbError) {
-                    console.warn('Products table error, using localStorage:', dbError);
-                    // Используем localStorage как запасной вариант
-                    products = JSON.parse(localStorage.getItem('koshkt_products') || '[]')
-                        .filter(p => !p.is_purchased)
-                        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                }
+                // Загружаем из localStorage
+                const products = JSON.parse(localStorage.getItem('koshkt_products') || '[]')
+                    .filter(p => !p.is_purchased)
+                    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                 
                 container.innerHTML = '';
                 
                 if (products.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; width: 100%; color: #666; padding: 40px;">Товаров пока нет. Будьте первым, кто создаст товар!</p>';
+                    container.innerHTML = `
+                        <div style="text-align: center; width: 100%; color: #666; padding: 40px; grid-column: 1 / -1;">
+                            <h3>Товаров пока нет</h3>
+                            <p>Будьте первым, кто создаст товар!</p>
+                            <button onclick="showSection('create')" class="btn btn-primary" style="margin-top: 20px;">
+                                Создать первый товар
+                            </button>
+                        </div>
+                    `;
                     return;
                 }
                 
@@ -1031,13 +1038,17 @@
                     container.appendChild(productCard);
                 });
                 
+                console.log(`Loaded ${products.length} products`);
+                
             } catch (error) {
+                console.error('Load products error:', error);
                 container.innerHTML = '<p style="text-align: center; width: 100%; color: #f44336; padding: 40px;">Ошибка загрузки товаров: ' + error.message + '</p>';
             }
         }
         
         // Загрузка моих товаров
         async function loadMyProducts() {
+            console.log('Loading my products...');
             if (!currentUser) {
                 showNotification('Для просмотра ваших товаров необходимо войти в систему', 'error');
                 showSection('auth');
@@ -1048,37 +1059,24 @@
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка ваших товаров...</div>';
             
             try {
-                let myProducts = [];
-                
-                if (currentUser.id) {
-                    // Пробуем загрузить из Supabase
-                    try {
-                        const { data, error } = await supabase
-                            .from('products')
-                            .select('*')
-                            .eq('user_id', currentUser.id)
-                            .order('created_at', { ascending: false });
-                        
-                        if (!error) {
-                            myProducts = data || [];
-                        }
-                    } catch (dbError) {
-                        console.warn('Products table error:', dbError);
-                    }
-                }
-                
-                // Если в Supabase ничего нет, пробуем localStorage
-                if (myProducts.length === 0) {
-                    const allProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
-                    myProducts = allProducts.filter(p => 
-                        p.user_email === currentUser.email || p.user_id === currentUser.id
-                    );
-                }
+                // Загружаем из localStorage
+                const allProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
+                const myProducts = allProducts.filter(p => 
+                    p.user_email === currentUser.email || p.user_id === currentUser.id
+                ).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                 
                 container.innerHTML = '';
                 
                 if (myProducts.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; width: 100%; color: #666; padding: 40px;">У вас пока нет созданных товаров</p>';
+                    container.innerHTML = `
+                        <div style="text-align: center; width: 100%; color: #666; padding: 40px; grid-column: 1 / -1;">
+                            <h3>У вас пока нет созданных товаров</h3>
+                            <p>Создайте свой первый товар!</p>
+                            <button onclick="showSection('create')" class="btn btn-primary" style="margin-top: 20px;">
+                                Создать товар
+                            </button>
+                        </div>
+                    `;
                     return;
                 }
                 
@@ -1109,38 +1107,23 @@
                     container.appendChild(productCard);
                 });
                 
+                console.log(`Loaded ${myProducts.length} of my products`);
+                
             } catch (error) {
+                console.error('Load my products error:', error);
                 container.innerHTML = '<p style="text-align: center; width: 100%; color: #f44336; padding: 40px;">Ошибка загрузки товаров: ' + error.message + '</p>';
             }
         }
         
         // Просмотр деталей товара
         async function viewProductDetail(pageUrl) {
+            console.log('Viewing product detail:', pageUrl);
             showSection('loading');
             
             try {
-                let product = null;
-                
-                // Пробуем найти в Supabase
-                try {
-                    const { data, error } = await supabase
-                        .from('products')
-                        .select('*')
-                        .eq('page_url', pageUrl)
-                        .single();
-                    
-                    if (!error) {
-                        product = data;
-                    }
-                } catch (dbError) {
-                    console.warn('Product fetch error:', dbError);
-                }
-                
-                // Если не нашли в Supabase, ищем в localStorage
-                if (!product) {
-                    const allProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
-                    product = allProducts.find(p => p.page_url === pageUrl);
-                }
+                // Ищем товар в localStorage
+                const allProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
+                const product = allProducts.find(p => p.page_url === pageUrl);
                 
                 if (!product) {
                     showNotification('Товар не найден', 'error');
@@ -1171,6 +1154,9 @@
                                 <button class="btn btn-secondary" onclick="generateProductQR('${product.page_url}', '${product.name}')">
                                     Показать QR
                                 </button>
+                                <button class="btn" onclick="showSection('products')" style="background-color: #6c757d; color: white;">
+                                    Назад
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1200,6 +1186,7 @@
                             </div>
                         </div>
                     </div>
+                    ${currentUser ? `
                     <div class="review-form">
                         <h4>Оставить отзыв</h4>
                         <div class="form-group">
@@ -1207,11 +1194,13 @@
                         </div>
                         <button class="btn btn-primary" onclick="addReview()">Отправить отзыв</button>
                     </div>
+                    ` : '<p style="text-align: center; color: #666; margin-top: 30px;">Войдите, чтобы оставить отзыв</p>'}
                 `;
                 
                 showSection('product-detail');
                 
             } catch (error) {
+                console.error('View product error:', error);
                 showNotification(`Ошибка загрузки товара: ${error.message}`, 'error');
                 showSection('products');
             }
@@ -1219,34 +1208,33 @@
         
         // Покупка товара
         async function buyProduct(pageUrl) {
+            console.log('Buying product:', pageUrl);
             if (!currentUser) {
                 showNotification('Для покупки товара необходимо войти в систему', 'error');
                 showSection('auth');
                 return;
             }
             
+            if (!confirm('Вы уверены, что хотите купить этот товар?')) {
+                return;
+            }
+            
             showSection('loading');
             
             try {
-                // Генерируем новый URL для QR-кода покупки
-                const qrPageUrl = await generateUniqueUrl();
-                const qrFullUrl = `${window.location.origin}/?qr=${qrPageUrl}`;
+                // Обновляем статус товара в localStorage
+                const allProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
+                const updatedProducts = allProducts.map(p => {
+                    if (p.page_url === pageUrl) {
+                        return { ...p, is_purchased: true };
+                    }
+                    return p;
+                });
+                localStorage.setItem('koshkt_products', JSON.stringify(updatedProducts));
                 
-                // Обновляем статус товара в Supabase
-                try {
-                    await supabase
-                        .from('products')
-                        .update({ is_purchased: true })
-                        .eq('page_url', pageUrl);
-                } catch (dbError) {
-                    console.warn('Update product error:', dbError);
-                    // Обновляем в localStorage
-                    const allProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
-                    const updatedProducts = allProducts.map(p => 
-                        p.page_url === pageUrl ? { ...p, is_purchased: true } : p
-                    );
-                    localStorage.setItem('koshkt_products', JSON.stringify(updatedProducts));
-                }
+                // Генерируем новый URL для QR-кода покупки
+                const qrPageUrl = generateRandomUrl(12);
+                const qrFullUrl = `${window.location.origin}?purchase=${qrPageUrl}`;
                 
                 // Генерируем QR-код
                 const qrContainer = document.createElement('div');
@@ -1267,9 +1255,10 @@
                 }, 100);
                 
                 showNotification('Товар успешно куплен! Сгенерирован QR-код новой страницы.', 'success');
-                showSection('home');
+                showSection('products');
                 
             } catch (error) {
+                console.error('Buy product error:', error);
                 showNotification(`Ошибка покупки: ${error.message}`, 'error');
                 showSection('products');
             }
@@ -1277,7 +1266,8 @@
         
         // Генерация QR-кода товара
         function generateProductQR(pageUrl, productName) {
-            const pageLink = `${window.location.origin}/?product=${pageUrl}`;
+            console.log('Generating QR for product:', productName);
+            const pageLink = `${window.location.origin}?product=${pageUrl}`;
             
             const qrContainer = document.createElement('div');
             new QRCode(qrContainer, {
@@ -1298,6 +1288,7 @@
         
         // Добавление отзыва
         function addReview() {
+            console.log('Adding review');
             const reviewText = document.getElementById('review-text').value;
             
             if (!reviewText.trim()) {
@@ -1330,18 +1321,22 @@
         
         // ============ ОБРАБОТЧИКИ СОБЫТИЙ ============
         
+        // Навигация
         homeLink.addEventListener('click', (e) => {
             e.preventDefault();
+            console.log('Home link clicked');
             showSection('home');
         });
         
         productsLink.addEventListener('click', (e) => {
             e.preventDefault();
+            console.log('Products link clicked');
             showSection('products');
         });
         
         myProductsLink.addEventListener('click', (e) => {
             e.preventDefault();
+            console.log('My products link clicked');
             if (!currentUser) {
                 showNotification('Для просмотра ваших товаров необходимо войти в систему', 'error');
                 showSection('auth');
@@ -1352,6 +1347,7 @@
         
         createPageLink.addEventListener('click', (e) => {
             e.preventDefault();
+            console.log('Create page link clicked');
             if (!currentUser) {
                 showNotification('Для создания страницы необходимо войти в систему', 'error');
                 showSection('auth');
@@ -1360,13 +1356,22 @@
             }
         });
         
-        loginBtn.addEventListener('click', () => {
+        // Кнопки авторизации
+        loginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Login button clicked');
             showSection('auth');
         });
         
-        logoutBtn.addEventListener('click', handleLogout);
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Logout button clicked');
+            handleLogout();
+        });
         
-        getStartedBtn.addEventListener('click', () => {
+        getStartedBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Get started button clicked');
             if (!currentUser) {
                 showSection('auth');
             } else {
@@ -1374,34 +1379,113 @@
             }
         });
         
-        registerBtn.addEventListener('click', handleRegister);
-        signinBtn.addEventListener('click', handleSignIn);
-        createProductBtn.addEventListener('click', handleCreateProduct);
+        registerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Register button clicked');
+            handleRegister();
+        });
+        
+        signinBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Sign in button clicked');
+            handleSignIn();
+        });
+        
+        createProductBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Create product button clicked');
+            handleCreateProduct();
+        });
+        
+        if (backToProductsBtn) {
+            backToProductsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Back to products button clicked');
+                showSection('products');
+            });
+        }
+        
+        // Обработка хэша в URL
+        function handleHashChange() {
+            const hash = window.location.hash.substring(1) || 'home';
+            console.log('Hash changed to:', hash);
+            
+            // Проверяем, доступна ли секция
+            const sections = ['home', 'auth', 'create', 'products', 'my-products', 'product-detail'];
+            if (sections.includes(hash)) {
+                showSection(hash);
+            } else {
+                showSection('home');
+            }
+        }
         
         // ============ ИНИЦИАЛИЗАЦИЯ ============
         
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log('DOM loaded, initializing...');
+            
             // Проверяем авторизацию
             await checkAuthSession();
             
-            // Показываем главную страницу
-            showSection('home');
+            // Обрабатываем хэш при загрузке
+            handleHashChange();
+            
+            // Слушаем изменения хэша
+            window.addEventListener('hashchange', handleHashChange);
             
             // Проверяем URL параметры
             const urlParams = new URLSearchParams(window.location.search);
             const productParam = urlParams.get('product');
-            const qrParam = urlParams.get('qr');
+            const purchaseParam = urlParams.get('purchase');
             
             if (productParam) {
+                console.log('Product parameter found:', productParam);
                 viewProductDetail(productParam);
-            } else if (qrParam) {
-                // Показываем страницу с QR-кодом
+            } else if (purchaseParam) {
+                console.log('Purchase parameter found:', purchaseParam);
                 showSection('home');
                 showNotification('Это страница с QR-кодом покупки', 'success');
             }
+            
+            // Добавляем тестовые данные, если localStorage пуст
+            const testProducts = [
+                {
+                    id: 'test_1',
+                    name: "Умные часы Pro",
+                    description: "Современные умные часы с отслеживанием активности и уведомлениями",
+                    price: 12990,
+                    image_url: "https://picsum.photos/600/400?random=10",
+                    page_url: "smartwatch123",
+                    user_email: "demo@example.com",
+                    user_name: "Демо Пользователь",
+                    is_purchased: false,
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: 'test_2',
+                    name: "Беспроводные наушники",
+                    description: "Наушники с шумоподавлением и длительным временем работы",
+                    price: 7990,
+                    image_url: "https://picsum.photos/600/400?random=11",
+                    page_url: "headphones456",
+                    user_email: "seller@example.com",
+                    user_name: "Продавец",
+                    is_purchased: false,
+                    created_at: new Date(Date.now() - 86400000).toISOString() // Вчера
+                }
+            ];
+            
+            const currentProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
+            if (currentProducts.length === 0) {
+                localStorage.setItem('koshkt_products', JSON.stringify(testProducts));
+                console.log('Added test products to localStorage');
+            }
+            
+            console.log('Initialization complete');
         });
         
         // Экспортируем функции в глобальную область видимости
+        window.showSection = showSection;
         window.viewProductDetail = viewProductDetail;
         window.buyProduct = buyProduct;
         window.generateProductQR = generateProductQR;
