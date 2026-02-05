@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KoSHKT - Интернет-магазин</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 2.2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 1.1rem;
+        }
+
+        nav a:hover {
+            color: #ffcc00;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ffcc00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a237e;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #ffcc00;
+            color: #1a237e;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffb300;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #3d8b40;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            padding: 40px 0;
+            min-height: calc(100vh - 180px);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #1a237e;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin: 30px 0 20px;
+            color: #3949ab;
+            border-bottom: 2px solid #ffcc00;
+            padding-bottom: 10px;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #3949ab;
+            outline: none;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #1a237e;
+        }
+
+        .product-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4caf50;
+            margin-bottom: 15px;
+        }
+
+        .reviews-container {
+            margin-top: 30px;
+        }
+
+        .review-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .review-author {
+            font-weight: 700;
+            color: #1a237e;
+        }
+
+        .review-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .review-text {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .review-form {
+            margin-top: 30px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .qr-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 25px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        #qrcode {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+        }
+
+        .qr-instructions {
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification.success {
+            background-color: #4caf50;
+        }
+
+        .notification.error {
+            background-color: #f44336;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        footer {
+            background-color: #1a237e;
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .loading i {
+            margin-right: 10px;
+            color: #3949ab;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-shopping-cart"></i>
+                <span>KoSHKT</span>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" id="home-link">Главная</a></li>
+                    <li><a href="#" id="products-link">Товары</a></li>
+                    <li><a href="#" id="my-products-link">Мои товары</a></li>
+                    <li><a href="#" id="create-page-link">Создать страницу</a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-section">
+                <div id="user-info" class="user-info hidden">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span id="user-name">Пользователь</span>
+                    <button id="logout-btn" class="btn btn-danger btn-small">Выйти</button>
+                </div>
+                <div id="auth-buttons">
+                    <button id="login-btn" class="btn btn-primary">Войти / Регистрация</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div id="notification-area"></div>
+            
+            <section id="home-section">
+                <h1 class="page-title">Добро пожаловать в KoSHKT</h1>
+                <div class="form-container">
+                    <p>KoSHKT - это уникальная платформа для создания и продажи товаров с автоматической генерацией страниц товаров и QR-кодов для каждого продукта.</p>
+                    <div class="qr-container">
+                        <h3>Как это работает?</h3>
+                        <p>После регистрации вы можете создавать страницы товаров, которые автоматически получают уникальный URL. После покупки товара генерируется QR-код, который можно сохранить в галерею.</p>
+                        <div style="margin-top: 20px;">
+                            <button id="get-started-btn" class="btn btn-primary">Начать использовать</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="auth-section" class="hidden">
+                <h2 class="page-title">Вход / Регистрация</h2>
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="fullname">ФИО</label>
+                        <input type="text" id="fullname" class="form-control" placeholder="Введите ваше полное имя">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" placeholder="Введите ваш email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" id="password" class="form-control" placeholder="Введите пароль">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Подтвердите пароль</label>
+                        <input type="password" id="confirm-password" class="form-control" placeholder="Повторите пароль">
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 25px;">
+                        <button id="register-btn" class="btn btn-primary" style="flex: 1;">Зарегистрироваться</button>
+                        <button id="signin-btn" class="btn btn-secondary" style="flex: 1;">Войти</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="create-page-section" class="hidden">
+                <h2 class="page-title">Создать страницу товара</h2>
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="product-name">Название товара</label>
+                        <input type="text" id="product-name" class="form-control" placeholder="Введите название товара">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-description">Описание товара</label>
+                        <textarea id="product-description" class="form-control" rows="5" placeholder="Введите описание товара"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-price">Цена товара (руб.)</label>
+                        <input type="number" id="product-price" class="form-control" placeholder="Введите цену товара" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-image">Ссылка на изображение товара</label>
+                        <input type="text" id="product-image" class="form-control" placeholder="Введите URL изображения товара">
+                        <small>Вы можете использовать: https://picsum.photos/600/400?random=1</small>
+                    </div>
+                    <button id="create-product-btn" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+                        Создать страницу товара
+                    </button>
+                    <div class="qr-container hidden" id="page-created-info">
+                        <h3>Страница успешно создана!</h3>
+                        <p>Ваша страница доступна по ссылке: <br><a id="page-link" href="#" target="_blank" style="word-break: break-all;"></a></p>
+                        <div id="qrcode-new-page"></div>
+                        <p class="qr-instructions">QR-код можно сохранить, нажав правой кнопкой мыши на изображении</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="products-section" class="hidden">
+                <h2 class="page-title">Товары на продажу</h2>
+                <div id="products-container" class="products-grid">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Загрузка товаров...
+                    </div>
+                </div>
+            </section>
+
+            <section id="product-detail-section" class="hidden">
+                <div id="product-detail-container"></div>
+                <div id="reviews-container" class="reviews-container"></div>
+            </section>
+
+            <section id="my-products-section" class="hidden">
+                <h2 class="page-title">Мои товары</h2>
+                <div id="my-products-container" class="products-grid">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Загрузка ваших товаров...
+                    </div>
+                </div>
+            </section>
+
+            <div id="loading-section" class="loading hidden">
+                <i class="fas fa-spinner fa-spin"></i> Загрузка...
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>KoSHKT - Интернет-магазин с уникальными товарами и автоматической генерацией страниц</p>
+            <p>&copy; 2023 KoSHKT. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ============ НАСТРОЙКИ SUPABASE ============
+        const SUPABASE_URL = 'https://ddmttrsbxkbfuowvmsqs.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkbXR0cnNieGtiZnVvd3Ztc3FzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwODU0OTMsImV4cCI6MjA4NDY2MTQ5M30.B4JRio9-_v5Lw03HNMh4mGw8bhiQyVF-Sb9606Hzhas';
+        
+        // Инициализация Supabase
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // ============ ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ============
+        let currentUser = null;
+        let currentSection = 'home';
+        
+        // ============ DOM ЭЛЕМЕНТЫ ============
+        const homeLink = document.getElementById('home-link');
+        const productsLink = document.getElementById('products-link');
+        const myProductsLink = document.getElementById('my-products-link');
+        const createPageLink = document.getElementById('create-page-link');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const getStartedBtn = document.getElementById('get-started-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const signinBtn = document.getElementById('signin-btn');
+        const createProductBtn = document.getElementById('create-product-btn');
+        
+        // Секции
+        const homeSection = document.getElementById('home-section');
+        const authSection = document.getElementById('auth-section');
+        const createPageSection = document.getElementById('create-page-section');
+        const productsSection = document.getElementById('products-section');
+        const productDetailSection = document.getElementById('product-detail-section');
+        const myProductsSection = document.getElementById('my-products-section');
+        const loadingSection = document.getElementById('loading-section');
+        
+        // UI элементы
+        const userInfo = document.getElementById('user-info');
+        const authButtons = document.getElementById('auth-buttons');
+        const userName = document.getElementById('user-name');
+        const userAvatar = document.getElementById('user-avatar');
+        const notificationArea = document.getElementById('notification-area');
+        
+        // ============ ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ============
+        
+        // Показать уведомление
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notificationArea.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+        
+        // Показать уведомление с QR-кодом
+        function showNotificationWithQR(message, qrSrc) {
+            const notification = document.createElement('div');
+            notification.className = 'notification success';
+            notification.style.maxWidth = '300px';
+            notification.innerHTML = `
+                <div style="margin-bottom: 10px;">${message}</div>
+                <img src="${qrSrc}" alt="QR Code" style="width: 150px; height: 150px; display: block; margin: 10px auto;">
+                <div style="font-size: 0.9rem; margin-top: 10px;">QR-код можно сохранить, нажав правой кнопкой мыши на изображении</div>
+            `;
+            notificationArea.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 10000);
+        }
+        
+        // Показать секцию
+        function showSection(sectionName) {
+            homeSection.classList.add('hidden');
+            authSection.classList.add('hidden');
+            createPageSection.classList.add('hidden');
+            productsSection.classList.add('hidden');
+            productDetailSection.classList.add('hidden');
+            myProductsSection.classList.add('hidden');
+            loadingSection.classList.add('hidden');
+            
+            switch(sectionName) {
+                case 'home':
+                    homeSection.classList.remove('hidden');
+                    break;
+                case 'auth':
+                    authSection.classList.remove('hidden');
+                    break;
+                case 'create':
+                    createPageSection.classList.remove('hidden');
+                    break;
+                case 'products':
+                    productsSection.classList.remove('hidden');
+                    loadProducts();
+                    break;
+                case 'product-detail':
+                    productDetailSection.classList.remove('hidden');
+                    break;
+                case 'my-products':
+                    myProductsSection.classList.remove('hidden');
+                    loadMyProducts();
+                    break;
+                case 'loading':
+                    loadingSection.classList.remove('hidden');
+                    break;
+            }
+            
+            currentSection = sectionName;
+        }
+        
+        // Обновить UI после входа
+        function updateUIForUser(user) {
+            if (user) {
+                userInfo.classList.remove('hidden');
+                authButtons.classList.add('hidden');
+                userName.textContent = user.full_name || user.email;
+                userAvatar.textContent = (user.full_name || user.email).charAt(0).toUpperCase();
+                currentUser = user;
+            } else {
+                userInfo.classList.add('hidden');
+                authButtons.classList.remove('hidden');
+                currentUser = null;
+            }
+        }
+        
+        // Генерация случайного URL
+        function generateRandomUrl(length = 8) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // ============ ФУНКЦИИ ДЛЯ РАБОТЫ С БАЗОЙ ДАННЫХ ============
+        
+        // Проверка уникальности URL
+        async function isUrlUnique(url) {
+            try {
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('page_url')
+                    .eq('page_url', url)
+                    .maybeSingle();
+                
+                if (error) {
+                    console.error('URL check error:', error);
+                    return true; // Если ошибка, считаем URL уникальным
+                }
+                
+                return !data; // Если data пустое, значит URL уникален
+            } catch (error) {
+                console.error('URL check error:', error);
+                return true;
+            }
+        }
+        
+        // Генерация уникального URL
+        async function generateUniqueUrl() {
+            let url;
+            let isUnique = false;
+            let attempts = 0;
+            
+            while (!isUnique && attempts < 10) {
+                url = generateRandomUrl();
+                isUnique = await isUrlUnique(url);
+                attempts++;
+            }
+            
+            // Если не удалось найти уникальный URL, добавляем timestamp
+            if (!isUnique) {
+                url = generateRandomUrl(6) + '_' + Date.now().toString().slice(-6);
+            }
+            
+            return url;
+        }
+        
+        // ============ АУТЕНТИФИКАЦИЯ ============
+        
+        // Регистрация
+        async function handleRegister() {
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (!fullname || !email || !password || !confirmPassword) {
+                showNotification('Заполните все поля', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showNotification('Пароли не совпадают', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showNotification('Пароль должен содержать не менее 6 символов', 'error');
+                return;
+            }
+            
+            showSection('loading');
+            
+            try {
+                // 1. Регистрация в Supabase Auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullname
+                        }
+                    }
+                });
+                
+                if (authError) throw authError;
+                
+                // 2. Сохранение в таблицу users (если таблица существует)
+                try {
+                    const { error: userError } = await supabase
+                        .from('users')
+                        .insert([
+                            {
+                                id: authData.user.id,
+                                email: email,
+                                full_name: fullname
+                            }
+                        ]);
+                    
+                    if (userError && !userError.message.includes('does not exist')) {
+                        console.warn('Users table error:', userError);
+                    }
+                } catch (tableError) {
+                    console.warn('Users table may not exist:', tableError);
+                }
+                
+                // Обновляем UI
+                updateUIForUser({
+                    id: authData.user.id,
+                    email: email,
+                    full_name: fullname
+                });
+                
+                showNotification('Регистрация прошла успешно! Проверьте email для подтверждения.', 'success');
+                showSection('home');
+                
+            } catch (error) {
+                showNotification(`Ошибка регистрации: ${error.message}`, 'error');
+                showSection('auth');
+            }
+        }
+        
+        // Вход
+        async function handleSignIn() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                showNotification('Заполните все поля', 'error');
+                return;
+            }
+            
+            showSection('loading');
+            
+            try {
+                // Вход через Supabase Auth
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) throw error;
+                
+                // Получаем данные пользователя
+                let userData = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    full_name: data.user.user_metadata?.full_name || data.user.email
+                };
+                
+                // Пробуем получить данные из таблицы users
+                try {
+                    const { data: dbUser, error: dbError } = await supabase
+                        .from('users')
+                        .select('*')
+                        .eq('id', data.user.id)
+                        .maybeSingle();
+                    
+                    if (!dbError && dbUser) {
+                        userData = dbUser;
+                    }
+                } catch (tableError) {
+                    console.warn('Users table may not exist:', tableError);
+                }
+                
+                updateUIForUser(userData);
+                showNotification('Вход выполнен успешно!', 'success');
+                showSection('home');
+                
+            } catch (error) {
+                showNotification(`Ошибка входа: ${error.message}`, 'error');
+                showSection('auth');
+            }
+        }
+        
+        // Выход
+        async function handleLogout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                updateUIForUser(null);
+                showNotification('Вы вышли из системы', 'success');
+                showSection('home');
+            } catch (error) {
+                showNotification(`Ошибка выхода: ${error.message}`, 'error');
+            }
+        }
+        
+        // Проверка сессии при загрузке
+        async function checkAuthSession() {
+            try {
+                const { data, error } = await supabase.auth.getSession();
+                
+                if (error) throw error;
+                
+                if (data.session) {
+                    let userData = {
+                        id: data.session.user.id,
+                        email: data.session.user.email,
+                        full_name: data.session.user.user_metadata?.full_name || data.session.user.email
+                    };
+                    
+                    // Пробуем получить данные из таблицы users
+                    try {
+                        const { data: dbUser, error: dbError } = await supabase
+                            .from('users')
+                            .select('*')
+                            .eq('id', data.session.user.id)
+                            .maybeSingle();
+                        
+                        if (!dbError && dbUser) {
+                            userData = dbUser;
+                        }
+                    } catch (tableError) {
+                        console.warn('Users table may not exist:', tableError);
+                    }
+                    
+                    updateUIForUser(userData);
+                }
+            } catch (error) {
+                console.error('Session check error:', error);
+            }
+        }
+        
+        // ============ ТОВАРЫ ============
+        
+        // Создание товара
+        async function handleCreateProduct() {
+            if (!currentUser) {
+                showNotification('Для создания товара необходимо войти в систему', 'error');
+                showSection('auth');
+                return;
+            }
+            
+            const name = document.getElementById('product-name').value;
+            const description = document.getElementById('product-description').value;
+            const price = document.getElementById('product-price').value;
+            const imageUrl = document.getElementById('product-image').value;
+            
+            if (!name || !description || !price) {
+                showNotification('Заполните обязательные поля', 'error');
+                return;
+            }
+            
+            showSection('loading');
+            
+            try {
+                // Генерация уникального URL
+                const pageUrl = await generateUniqueUrl();
+                
+                // Создаем товар в таблице products
+                const productData = {
+                    name: name,
+                    description: description,
+                    price: parseFloat(price),
+                    image_url: imageUrl || 'https://picsum.photos/600/400?random=1',
+                    page_url: pageUrl,
+                    is_purchased: false
+                };
+                
+                // Если у нас есть таблица users, добавляем user_id
+                if (currentUser && currentUser.id) {
+                    productData.user_id = currentUser.id;
+                } else {
+                    // Иначе сохраняем email пользователя
+                    productData.user_email = currentUser?.email || 'anonymous';
+                    productData.user_name = currentUser?.full_name || 'Аноним';
+                }
+                
+                const { data, error } = await supabase
+                    .from('products')
+                    .insert([productData])
+                    .select()
+                    .single();
+                
+                if (error) {
+                    // Если таблицы products не существует, создаем упрощенную версию
+                    if (error.message.includes('does not exist')) {
+                        showNotification('Таблица товаров не настроена. Используем локальное хранилище.', 'error');
+                        
+                        // Сохраняем в localStorage для демо
+                        const localProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
+                        const newProduct = {
+                            id: 'local_' + Date.now(),
+                            ...productData,
+                            created_at: new Date().toISOString()
+                        };
+                        localProducts.push(newProduct);
+                        localStorage.setItem('koshkt_products', JSON.stringify(localProducts));
+                        
+                        data = newProduct;
+                    } else {
+                        throw error;
+                    }
+                }
+                
+                // Показываем результат
+                const pageLink = `${window.location.origin}/?product=${pageUrl}`;
+                document.getElementById('page-link').textContent = pageLink;
+                document.getElementById('page-link').href = '#';
+                
+                // Генерируем QR-код
+                const qrContainer = document.getElementById('qrcode-new-page');
+                qrContainer.innerHTML = '';
+                new QRCode(qrContainer, {
+                    text: pageLink,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#1a237e',
+                    colorLight: '#ffffff'
+                });
+                
+                document.getElementById('page-created-info').classList.remove('hidden');
+                showNotification('Товар успешно создан!', 'success');
+                showSection('create');
+                
+            } catch (error) {
+                showNotification(`Ошибка создания товара: ${error.message}`, 'error');
+                showSection('create');
+            }
+        }
+        
+        // Загрузка всех товаров
+        async function loadProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка товаров...</div>';
+            
+            try {
+                let products = [];
+                
+                // Пробуем загрузить из Supabase
+                try {
+                    const { data, error } = await supabase
+                        .from('products')
+                        .select('*')
+                        .eq('is_purchased', false)
+                        .order('created_at', { ascending: false });
+                    
+                    if (error) throw error;
+                    products = data || [];
+                } catch (dbError) {
+                    console.warn('Products table error, using localStorage:', dbError);
+                    // Используем localStorage как запасной вариант
+                    products = JSON.parse(localStorage.getItem('koshkt_products') || '[]')
+                        .filter(p => !p.is_purchased)
+                        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                }
+                
+                container.innerHTML = '';
+                
+                if (products.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; width: 100%; color: #666; padding: 40px;">Товаров пока нет. Будьте первым, кто создаст товар!</p>';
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.image_url || 'https://picsum.photos/600/400?random=1'}" 
+                             alt="${product.name}" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-name">${product.name}</h3>
+                            <p class="product-description">${product.description.length > 100 ? 
+                                product.description.substring(0, 100) + '...' : product.description}</p>
+                            <div class="product-price">${parseFloat(product.price).toLocaleString('ru-RU')} руб.</div>
+                            <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">
+                                Продавец: ${product.user_name || product.user_email || 'Неизвестно'}
+                            </p>
+                            <button class="btn btn-primary" onclick="viewProductDetail('${product.page_url}')">
+                                Подробнее
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(productCard);
+                });
+                
+            } catch (error) {
+                container.innerHTML = '<p style="text-align: center; width: 100%; color: #f44336; padding: 40px;">Ошибка загрузки товаров: ' + error.message + '</p>';
+            }
+        }
+        
+        // Загрузка моих товаров
+        async function loadMyProducts() {
+            if (!currentUser) {
+                showNotification('Для просмотра ваших товаров необходимо войти в систему', 'error');
+                showSection('auth');
+                return;
+            }
+            
+            const container = document.getElementById('my-products-container');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка ваших товаров...</div>';
+            
+            try {
+                let myProducts = [];
+                
+                if (currentUser.id) {
+                    // Пробуем загрузить из Supabase
+                    try {
+                        const { data, error } = await supabase
+                            .from('products')
+                            .select('*')
+                            .eq('user_id', currentUser.id)
+                            .order('created_at', { ascending: false });
+                        
+                        if (!error) {
+                            myProducts = data || [];
+                        }
+                    } catch (dbError) {
+                        console.warn('Products table error:', dbError);
+                    }
+                }
+                
+                // Если в Supabase ничего нет, пробуем localStorage
+                if (myProducts.length === 0) {
+                    const allProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
+                    myProducts = allProducts.filter(p => 
+                        p.user_email === currentUser.email || p.user_id === currentUser.id
+                    );
+                }
+                
+                container.innerHTML = '';
+                
+                if (myProducts.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; width: 100%; color: #666; padding: 40px;">У вас пока нет созданных товаров</p>';
+                    return;
+                }
+                
+                myProducts.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.image_url || 'https://picsum.photos/600/400?random=1'}" 
+                             alt="${product.name}" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-name">${product.name}</h3>
+                            <p class="product-description">${product.description.length > 100 ? 
+                                product.description.substring(0, 100) + '...' : product.description}</p>
+                            <div class="product-price">${parseFloat(product.price).toLocaleString('ru-RU')} руб.</div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <button class="btn btn-primary" onclick="viewProductDetail('${product.page_url}')">
+                                    Подробнее
+                                </button>
+                                <button class="btn btn-secondary" onclick="generateProductQR('${product.page_url}', '${product.name}')">
+                                    QR-код
+                                </button>
+                            </div>
+                            ${product.is_purchased ? 
+                                '<div style="margin-top: 10px; color: #4caf50; font-weight: bold;">✓ Продано</div>' : 
+                                '<div style="margin-top: 10px; color: #ff9800; font-weight: bold;">В продаже</div>'}
+                        </div>
+                    `;
+                    container.appendChild(productCard);
+                });
+                
+            } catch (error) {
+                container.innerHTML = '<p style="text-align: center; width: 100%; color: #f44336; padding: 40px;">Ошибка загрузки товаров: ' + error.message + '</p>';
+            }
+        }
+        
+        // Просмотр деталей товара
+        async function viewProductDetail(pageUrl) {
+            showSection('loading');
+            
+            try {
+                let product = null;
+                
+                // Пробуем найти в Supabase
+                try {
+                    const { data, error } = await supabase
+                        .from('products')
+                        .select('*')
+                        .eq('page_url', pageUrl)
+                        .single();
+                    
+                    if (!error) {
+                        product = data;
+                    }
+                } catch (dbError) {
+                    console.warn('Product fetch error:', dbError);
+                }
+                
+                // Если не нашли в Supabase, ищем в localStorage
+                if (!product) {
+                    const allProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
+                    product = allProducts.find(p => p.page_url === pageUrl);
+                }
+                
+                if (!product) {
+                    showNotification('Товар не найден', 'error');
+                    showSection('products');
+                    return;
+                }
+                
+                // Отображаем детали товара
+                const container = document.getElementById('product-detail-container');
+                container.innerHTML = `
+                    <div class="product-card" style="max-width: 800px; margin: 0 auto;">
+                        <img src="${product.image_url || 'https://picsum.photos/600/400?random=1'}" 
+                             alt="${product.name}" class="product-image" style="height: 400px;">
+                        <div class="product-info">
+                            <h1 class="product-name">${product.name}</h1>
+                            <p class="product-description">${product.description}</p>
+                            <div class="product-price">${parseFloat(product.price).toLocaleString('ru-RU')} руб.</div>
+                            <p style="color: #666; margin: 10px 0;">
+                                <strong>Продавец:</strong> ${product.user_name || product.user_email || 'Неизвестно'}
+                            </p>
+                            <p style="color: #666; margin-bottom: 20px;">
+                                <strong>Дата размещения:</strong> ${new Date(product.created_at).toLocaleDateString('ru-RU')}
+                            </p>
+                            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                                <button class="btn btn-primary" onclick="buyProduct('${product.page_url}')">
+                                    Купить товар
+                                </button>
+                                <button class="btn btn-secondary" onclick="generateProductQR('${product.page_url}', '${product.name}')">
+                                    Показать QR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Отображаем отзывы
+                const reviewsContainer = document.getElementById('reviews-container');
+                reviewsContainer.innerHTML = `
+                    <h3 class="section-title">Отзывы о товаре</h3>
+                    <div id="reviews-list">
+                        <div class="review-card">
+                            <div class="review-header">
+                                <span class="review-author">Анна К.</span>
+                                <span class="review-date">18.10.2023</span>
+                            </div>
+                            <div class="review-text">
+                                Отличный товар! Качество на высоте, доставка быстрая.
+                            </div>
+                        </div>
+                        <div class="review-card">
+                            <div class="review-header">
+                                <span class="review-author">Дмитрий С.</span>
+                                <span class="review-date">16.10.2023</span>
+                            </div>
+                            <div class="review-text">
+                                Хорошее качество за такую цену. Рекомендую!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-form">
+                        <h4>Оставить отзыв</h4>
+                        <div class="form-group">
+                            <textarea id="review-text" class="form-control" rows="3" placeholder="Напишите ваш отзыв о товаре"></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="addReview()">Отправить отзыв</button>
+                    </div>
+                `;
+                
+                showSection('product-detail');
+                
+            } catch (error) {
+                showNotification(`Ошибка загрузки товара: ${error.message}`, 'error');
+                showSection('products');
+            }
+        }
+        
+        // Покупка товара
+        async function buyProduct(pageUrl) {
+            if (!currentUser) {
+                showNotification('Для покупки товара необходимо войти в систему', 'error');
+                showSection('auth');
+                return;
+            }
+            
+            showSection('loading');
+            
+            try {
+                // Генерируем новый URL для QR-кода покупки
+                const qrPageUrl = await generateUniqueUrl();
+                const qrFullUrl = `${window.location.origin}/?qr=${qrPageUrl}`;
+                
+                // Обновляем статус товара в Supabase
+                try {
+                    await supabase
+                        .from('products')
+                        .update({ is_purchased: true })
+                        .eq('page_url', pageUrl);
+                } catch (dbError) {
+                    console.warn('Update product error:', dbError);
+                    // Обновляем в localStorage
+                    const allProducts = JSON.parse(localStorage.getItem('koshkt_products') || '[]');
+                    const updatedProducts = allProducts.map(p => 
+                        p.page_url === pageUrl ? { ...p, is_purchased: true } : p
+                    );
+                    localStorage.setItem('koshkt_products', JSON.stringify(updatedProducts));
+                }
+                
+                // Генерируем QR-код
+                const qrContainer = document.createElement('div');
+                new QRCode(qrContainer, {
+                    text: qrFullUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#1a237e',
+                    colorLight: '#ffffff'
+                });
+                
+                // Ждем генерации QR-кода
+                setTimeout(() => {
+                    const qrImage = qrContainer.querySelector('img');
+                    if (qrImage) {
+                        showNotificationWithQR('Покупка оформлена! Сохраните QR-код новой страницы:', qrImage.src);
+                    }
+                }, 100);
+                
+                showNotification('Товар успешно куплен! Сгенерирован QR-код новой страницы.', 'success');
+                showSection('home');
+                
+            } catch (error) {
+                showNotification(`Ошибка покупки: ${error.message}`, 'error');
+                showSection('products');
+            }
+        }
+        
+        // Генерация QR-кода товара
+        function generateProductQR(pageUrl, productName) {
+            const pageLink = `${window.location.origin}/?product=${pageUrl}`;
+            
+            const qrContainer = document.createElement('div');
+            new QRCode(qrContainer, {
+                text: pageLink,
+                width: 200,
+                height: 200,
+                colorDark: '#1a237e',
+                colorLight: '#ffffff'
+            });
+            
+            setTimeout(() => {
+                const qrImage = qrContainer.querySelector('img');
+                if (qrImage) {
+                    showNotificationWithQR(`QR-код для товара "${productName}":`, qrImage.src);
+                }
+            }, 100);
+        }
+        
+        // Добавление отзыва
+        function addReview() {
+            const reviewText = document.getElementById('review-text').value;
+            
+            if (!reviewText.trim()) {
+                showNotification('Введите текст отзыва', 'error');
+                return;
+            }
+            
+            if (!currentUser) {
+                showNotification('Для добавления отзыва необходимо войти в систему', 'error');
+                return;
+            }
+            
+            // Добавляем отзыв в UI
+            const reviewsList = document.getElementById('reviews-list');
+            const newReview = document.createElement('div');
+            newReview.className = 'review-card';
+            newReview.innerHTML = `
+                <div class="review-header">
+                    <span class="review-author">${currentUser.full_name || currentUser.email}</span>
+                    <span class="review-date">${new Date().toLocaleDateString('ru-RU')}</span>
+                </div>
+                <div class="review-text">${reviewText}</div>
+            `;
+            
+            reviewsList.appendChild(newReview);
+            document.getElementById('review-text').value = '';
+            
+            showNotification('Отзыв успешно добавлен', 'success');
+        }
+        
+        // ============ ОБРАБОТЧИКИ СОБЫТИЙ ============
+        
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection('home');
+        });
+        
+        productsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection('products');
+        });
+        
+        myProductsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!currentUser) {
+                showNotification('Для просмотра ваших товаров необходимо войти в систему', 'error');
+                showSection('auth');
+            } else {
+                showSection('my-products');
+            }
+        });
+        
+        createPageLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!currentUser) {
+                showNotification('Для создания страницы необходимо войти в систему', 'error');
+                showSection('auth');
+            } else {
+                showSection('create');
+            }
+        });
+        
+        loginBtn.addEventListener('click', () => {
+            showSection('auth');
+        });
+        
+        logoutBtn.addEventListener('click', handleLogout);
+        
+        getStartedBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                showSection('auth');
+            } else {
+                showSection('create');
+            }
+        });
+        
+        registerBtn.addEventListener('click', handleRegister);
+        signinBtn.addEventListener('click', handleSignIn);
+        createProductBtn.addEventListener('click', handleCreateProduct);
+        
+        // ============ ИНИЦИАЛИЗАЦИЯ ============
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Проверяем авторизацию
+            await checkAuthSession();
+            
+            // Показываем главную страницу
+            showSection('home');
+            
+            // Проверяем URL параметры
+            const urlParams = new URLSearchParams(window.location.search);
+            const productParam = urlParams.get('product');
+            const qrParam = urlParams.get('qr');
+            
+            if (productParam) {
+                viewProductDetail(productParam);
+            } else if (qrParam) {
+                // Показываем страницу с QR-кодом
+                showSection('home');
+                showNotification('Это страница с QR-кодом покупки', 'success');
+            }
+        });
+        
+        // Экспортируем функции в глобальную область видимости
+        window.viewProductDetail = viewProductDetail;
+        window.buyProduct = buyProduct;
+        window.generateProductQR = generateProductQR;
+        window.addReview = addReview;
+        
+    </script>
+</body>
+</html>
